@@ -1,0 +1,20 @@
+# Ignore all directories
+*/
+
+# # Ignore all non-Python files
+# *
+# !*.py
+
+# Example of ignoring specific directories
+node_modules/
+venv/
+
+# Example of ignoring specific files
+*.log
+*.csv
+*.json
+*.md
+
+# You can also add exceptions for specific directories or files to be tracked
+# !/src/
+# !/README.md
