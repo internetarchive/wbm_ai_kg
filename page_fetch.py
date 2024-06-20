@@ -1,4 +1,4 @@
-import subprocess
+import requests
 import pandas as pd
 import argparse
 from tqdm import tqdm
@@ -6,14 +6,14 @@ import json
 import os
 
 def fetch_cdx_data(url):
-    # Using curl to make the request to the Wayback Machine CDX API
-    curl_command = f"curl -s 'http://web.archive.org/cdx/search/cdx?url={url}&output=json'"
-    result = subprocess.run(curl_command, shell=True, capture_output=True, text=True)
+    # Using requests to make the request to the Wayback Machine CDX API
+    cdx_url = f"http://web.archive.org/cdx/search/cdx?url={url}&output=json"
+    response = requests.get(cdx_url)
     
-    if result.returncode != 0:
-        raise Exception(f"Failed to fetch data: {result.stderr}")
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch data: {response.text}")
     
-    data = json.loads(result.stdout)
+    data = response.json()
     
     if len(data) == 0:
         raise Exception("No data retrieved from the Wayback Machine CDX API.")
@@ -55,17 +55,16 @@ def fetch_and_save_content(row, base_dir):
     if not os.path.exists(directory):
         os.makedirs(directory)
     
-    # Fetch the content using curl
-    content_command = f"curl -s '{archive_url}'"
-    result = subprocess.run(content_command, shell=True, capture_output=True)
+    # Fetch the content using requests
+    response = requests.get(archive_url)
     
-    if result.returncode != 0:
-        raise Exception(f"Failed to fetch content: {result.stderr}")
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch content: {response.text}")
     
     # Save the content to a file in the directory
     filepath = os.path.join(directory, "content.html")
     with open(filepath, 'wb') as file:  # Write in binary mode to avoid encoding issues
-        file.write(result.stdout)
+        file.write(response.content)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Fetch CDX data and save to CSV.')
