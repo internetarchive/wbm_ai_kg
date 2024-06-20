@@ -3,7 +3,7 @@ Google Summer of Code (GSoC) 2024 Wayback Machine GenAI Knowledge Graph project
 
 # Wayback Machine CDX Fetcher
 
-This Python script fetches data from the Wayback Machine CDX API for a given URL, filters the data, and saves it to a CSV file. It also downloads and saves the archived content for each filtered record.
+This Python script fetches data from the Wayback Machine CDX API for a given URL, filters the data, and saves it to a TSV (Tab-Separated Values) file. It also downloads and saves the archived content for each filtered record.
 
 ## Requirements
 
@@ -15,7 +15,7 @@ This Python script fetches data from the Wayback Machine CDX API for a given URL
 - `os`
 
 You can install the required Python libraries using the following command:
-```bash
+```
 pip install requests pandas tqdm
 ```
 
@@ -24,9 +24,9 @@ pip install requests pandas tqdm
 ### Command Line Arguments
 
 - `url`: The URL to search in the Wayback Machine.
-- `output`: The output CSV file name.
+- `output`: The output TSV file name.
 - `--full`: Optional flag to dump full data without filtering.
-- `--num_lines`: Optional parameter to specify the number of lines to save from the end of the CSV. Default is 10.
+- `--num_lines`: Optional parameter to specify the number of lines to save from the end of the TSV. Default is 10.
 
 ### Example Command
 
@@ -37,10 +37,10 @@ python wayback_fetcher.py <url> <output> [--full] [--num_lines <num>]
 ### Example Usage
 
 ```bash
-python wayback_fetcher.py example.com output.csv --num_lines 5
+python wayback_fetcher.py example.com output.tsv --num_lines 5
 ```
 
-This command will fetch the CDX data for `example.com`, filter it, save the last 5 lines to `output.csv`, and download the corresponding archived content.
+This command will fetch the CDX data for `example.com`, filter it, save the last 5 lines to `output.tsv`, and download the corresponding archived content.
 
 ## Code Explanation
 
@@ -52,9 +52,9 @@ This function fetches data from the Wayback Machine CDX API for the given URL an
 
 This function filters the DataFrame to include only rows where the `mimetype` is `text/html` and the `statuscode` is `200`. It returns a DataFrame with only the `timestamp` and `original` columns.
 
-### `save_to_csv(df, filename, num_lines=10)`
+### `save_to_tsv(df, filename, num_lines=10)`
 
-This function saves the last `num_lines` of the DataFrame to a CSV file. It uses a progress bar to indicate the saving process.
+This function saves the last `num_lines` of the DataFrame to a TSV file. It uses a progress bar to indicate the saving process.
 
 ### `fetch_and_save_content(row, base_dir)`
 
@@ -62,7 +62,7 @@ This function fetches the archived content for a given row and saves it to a fil
 
 ### `main`
 
-The main function parses command-line arguments, fetches the CDX data, optionally filters it, saves the data to a CSV file, and fetches the content for each filtered record.
+The main function parses command-line arguments, fetches the CDX data, optionally filters it, saves the data to a TSV file, and fetches the content for each filtered record.
 
 ## Notes
 
