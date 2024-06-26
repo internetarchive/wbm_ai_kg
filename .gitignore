@@ -4,7 +4,7 @@
 # # Ignore all non-Python files
 # *
 # !*.py
-
+config.py
 # Example of ignoring specific directories
 node_modules/
 venv/

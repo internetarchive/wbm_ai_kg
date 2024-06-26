@@ -2,8 +2,8 @@ import os
 import openai
 import argparse
 from tqdm import tqdm
-
-openai.api_key = 'sk-proj-JkdhlutDB8ruyjtjwfgdT3BlbkFJlKtah6To3ouO2DOl7Vqp'
+from config import KEY
+openai.api_key = KEY
 
 def read_text_from_file(file_path):
     with open(file_path, 'r') as file:
