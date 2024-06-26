@@ -9,12 +9,13 @@
 node_modules/
 venv/
 
-# Example of ignoring specific files
+# Ignoring specific files
 *.log
 *.csv
+*.tsv
 *.json
 *.md
 
-# You can also add exceptions for specific directories or files to be tracked
+# Exceptions for specific directories or files to be tracked
 # !/src/
 # !/README.md
