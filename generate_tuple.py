@@ -29,42 +29,45 @@ def save_chunks_to_folder(chunks, folder_path):
 
 def generate_tuples_from_chunk(chunk):
     prompt = f"""
-    You are an advanced text extraction model designed to identify and extract key-value-relation tuples from a given text. Your task is to read the provided text and identify the relationships between entities mentioned in the text. For each relationship, you will create a tuple in the format (subject, predicate, object) where:
+    You are an advanced text extraction model designed to identify and extract key-value-relation tuples from a given text. Your task is to read the provided text and identify the relationships between entities mentioned in the text. For each relationship, you will create a tuple in the format (subject, predicate, object, subject_type, object_type) where:
 
     - Subject: The main entity involved in the relationship.
     - Predicate: The type of relationship or action connecting the subject and object.
     - Object: The secondary entity or value that is related to the subject.
+    - Subject_type: The category of the subject (e.g., person, place, organization, animal, thing, etc.).
+    - Object_type: The category of the object (e.g., person, place, organization, animal, thing, etc.).
 
     While extracting the tuples, follow these guidelines:
 
-    1. Identify Entities: Recognize all significant entities in the text such as people, organizations, locations, dates, products, and any other notable items.
+    1. Identify Entities: Recognize all significant entities in the text such as people, organizations, locations, dates, products, animals, and any other notable items.
     2. Determine Relationships: Understand the relationships or actions that connect these entities. Look for verbs, prepositions, and conjunctions that signify relationships.
     3. Extract Attributes: Identify attributes related to entities, such as dates, quantities, and descriptive terms.
-    4. Formulate Tuples: Create tuples in the format (subject, predicate, object) for each identified relationship or attribute. Ensure that each tuple accurately represents the information in the text.
+    4. Formulate Tuples: Create tuples in the format (subject, predicate, object, subject_type, object_type) for each identified relationship or attribute. Ensure that each tuple accurately represents the information in the text.
     5. Handle Multiple Relationships: If an entity has multiple relationships or attributes, create separate tuples for each one.
     6. Contextual Understanding: Use contextual understanding to ensure that the relationships are meaningful and correctly interpreted.
+    7. Categorize Entities: Assign the correct category to both the subject and the object based on the context provided in the text.
 
     Examples:
 
     1. Example 1:
        - Text: "The capital of France is Paris. The population of Japan is 126.3 million."
        - Tuples: 
-         - ("France", "capital", "Paris")
-         - ("Japan", "population", "126.3 million")
+         - ("France", "capital", "Paris", "place", "place")
+         - ("Japan", "population", "126.3 million", "place", "quantity")
 
     2. Example 2:
        - Text: "Barack Obama was born in Honolulu. He served as the 44th President of the United States."
        - Tuples:
-         - ("Barack Obama", "born in", "Honolulu")
-         - ("Barack Obama", "served as", "44th President of the United States")
+         - ("Barack Obama", "born in", "Honolulu", "person", "place")
+         - ("Barack Obama", "served as", "44th President of the United States", "person", "title")
 
     3. Example 3:
        - Text: "Microsoft was founded by Bill Gates and Paul Allen. It is headquartered in Redmond, Washington."
        - Tuples:
-         - ("Microsoft", "founded by", "Bill Gates")
-         - ("Microsoft", "founded by", "Paul Allen")
-         - ("Microsoft", "headquartered in", "Redmond")
-         - ("Redmond", "located in", "Washington")
+         - ("Microsoft", "founded by", "Bill Gates", "organization", "person")
+         - ("Microsoft", "founded by", "Paul Allen", "organization", "person")
+         - ("Microsoft", "headquartered in", "Redmond", "organization", "place")
+         - ("Redmond", "located in", "Washington", "place", "place")
 
     Task:
 
@@ -82,8 +85,6 @@ def generate_tuples_from_chunk(chunk):
             {"role": "system", "content": "You are a text extraction model."},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=1000,
-        temperature=0.7,
     )
 
     output = response['choices'][0]['message']['content'].strip()

@@ -9,7 +9,7 @@ def read_tuples_from_file(file_path):
         content = file.read()
 
     tuples = []
-    pattern = re.compile(r'\(\s*"([^"]*)"\s*,\s*"([^"]*)"\s*,\s*"([^"]*)"\s*\)')
+    pattern = re.compile(r'\(\s*"([^"]*)"\s*,\s*"([^"]*)"\s*,\s*"([^"]*)"\s*,\s*"([^"]*)"\s*,\s*"([^"]*)"\s*\)')
     
     for line in content.splitlines():
         match = pattern.search(line)
@@ -19,11 +19,11 @@ def read_tuples_from_file(file_path):
     return tuples
 
 def validate_and_group_tuples(tuples):
-    complete_tuples = [t for t in tuples if len(t) == 3 and all(t)]
+    complete_tuples = [t for t in tuples if len(t) == 5 and all(t)]
     grouped_tuples = {}
 
     for t in complete_tuples:
-        subject, predicate, obj = t
+        subject, predicate, obj, subject_type, obj_type = t
         group_key = subject
         if group_key not in grouped_tuples:
             grouped_tuples[group_key] = []

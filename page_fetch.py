@@ -55,16 +55,19 @@ def fetch_and_save_content(row, base_dir):
     if not os.path.exists(directory):
         os.makedirs(directory)
     
-    # Fetch the content using requests
-    response = requests.get(archive_url)
-    
-    if response.status_code != 200:
-        raise Exception(f"Failed to fetch content: {response.text}")
-    
-    # Save the content to a file in the directory
-    filepath = os.path.join(directory, "content.html")
-    with open(filepath, 'wb') as file:  # Write in binary mode to avoid encoding issues
-        file.write(response.content)
+    try:
+        # Fetch the content using requests
+        response = requests.get(archive_url)
+        
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch content: {response.text}")
+        
+        # Save the content to a file in the directory
+        filepath = os.path.join(directory, "content.html")
+        with open(filepath, 'wb') as file:  # Write in binary mode to avoid encoding issues
+            file.write(response.content)
+    except Exception as e:
+        print(f"Error fetching content for {timestamp}: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Fetch CDX data and save to TSV.')
@@ -80,6 +83,7 @@ if __name__ == "__main__":
         df = filter_data(df)
     
     df = save_to_tsv(df, args.output, args.num_lines)  # Save and get the last num_lines of data
+    # df = save_to_tsv(df, args.output)  # Save all
     
     # Create a base directory named after the TSV file (without .tsv extension)
     base_dir = os.path.splitext(args.output)[0]
