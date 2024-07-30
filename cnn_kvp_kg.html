@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Israeli prime minister", "label": "Israeli prime minister", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a partial deal with Hamas", "label": "a partial deal with Hamas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "some hostages", "label": "some hostages", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Israeli military", "label": "Israeli military", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "border with Lebanon", "label": "border with Lebanon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "injured Palestinian man to hood of jeep", "label": "injured Palestinian man to hood of jeep", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Netanyahu", "label": "Netanyahu", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "public complaint about US weapons supplies", "label": "public complaint about US weapons supplies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Residents along Lebanon\u2019s border with Israel", "label": "Residents along Lebanon\u2019s border with Israel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "another war", "label": "another war", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "U.S.", "label": "U.S.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Israel", "label": "Israel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "full-blown war with Hezbollah", "label": "full-blown war with Hezbollah", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "China", "label": "China", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Putin and Kim", "label": "Putin and Kim", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Taiwan without even needing to invade", "label": "Taiwan without even needing to invade", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "new \u2018alliance\u2019", "label": "new \u2018alliance\u2019", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "US aircraft carrier", "label": "US aircraft carrier", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "South Korea", "label": "South Korea", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Russia-North Korea defense pact", "label": "Russia-North Korea defense pact", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "fears", "label": "fears", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Russia", "label": "Russia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "two major terror attacks in just three months", "label": "two major terror attacks in just three months", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ukraine\u2019s power system", "label": "Ukraine\u2019s power system", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gunmen", "label": "Gunmen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "police, priest and civilians in attacks on places of worship in Russia\u2019s Dagestan", "label": "police, priest and civilians in attacks on places of worship in Russia\u2019s Dagestan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Fire", "label": "Fire", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "at lithium battery factory", "label": "at lithium battery factory", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chinese rocket debris", "label": "Chinese rocket debris", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "South Korea village", "label": "South Korea village", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Man", "label": "Man", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hajj heat wave", "label": "Hajj heat wave", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mecca", "label": "Mecca", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Duterte critic", "label": "Duterte critic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "drugs charges", "label": "drugs charges", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "six years", "label": "six years", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Missile fragments", "label": "Missile fragments", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "beachgoers in Russian-occupied Crimea", "label": "beachgoers in Russian-occupied Crimea", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "At least 5 dead", "label": "At least 5 dead", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trump", "label": "Trump", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Biden\u2019s debate prep strategy", "label": "Biden\u2019s debate prep strategy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "having a \u2018migrant league of fighters\u2019 to UFC President Dana White", "label": "having a \u2018migrant league of fighters\u2019 to UFC President Dana White", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hungary player", "label": "Hungary player", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "serious injury at Euro 2024 game", "label": "serious injury at Euro 2024 game", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Barcelona", "label": "Barcelona", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "apartment rentals by foreign tourists", "label": "apartment rentals by foreign tourists", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hiker", "label": "Hiker", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "by drinking a gallon of water each day", "label": "by drinking a gallon of water each day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "10 days in California mountains", "label": "10 days in California mountains", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "EU", "label": "EU", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Apple with a huge fine", "label": "Apple with a huge fine", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Apple of breaking new tech rules", "label": "Apple of breaking new tech rules", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "planned electric vehicle tariffs with China", "label": "planned electric vehicle tariffs with China", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Huawei", "label": "Huawei", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "force to be reckoned with", "label": "force to be reckoned with", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Wolves", "label": "Wolves", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "woman who went jogging in French safari zoo", "label": "woman who went jogging in French safari zoo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Taylor Swift", "label": "Taylor Swift", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "kitchen fire in NYC apartment", "label": "kitchen fire in NYC apartment", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Travis Kelce on stage during Eras Tour concert", "label": "Travis Kelce on stage during Eras Tour concert", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "her London show", "label": "her London show", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mysterious monolith", "label": "Mysterious monolith", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Las Vegas", "label": "Las Vegas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Photographer", "label": "Photographer", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "the bizarre world of global arms fairs", "label": "the bizarre world of global arms fairs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4-year-old boy", "label": "4-year-old boy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "after surviving nearly 24 hours alone in California woods", "label": "after surviving nearly 24 hours alone in California woods", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Democrats", "label": "Democrats", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UK election", "label": "UK election", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "New York nanny", "label": "New York nanny", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "20th-century street photography", "label": "20th-century street photography", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jason Williams/Nest cam", "label": "Jason Williams/Nest cam", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "homeowner chasing off intruder with frying pan", "label": "homeowner chasing off intruder with frying pan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ed Ruttledge/U.S. Geological Survey Cascades Volcano Observatory", "label": "Ed Ruttledge/U.S. Geological Survey Cascades Volcano Observatory", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "scientists", "label": "scientists", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Saju Mathew", "label": "Saju Mathew", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "arranged marriage to a perfect mate", "label": "arranged marriage to a perfect mate", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Arnold Jerocki/Getty Images", "label": "Arnold Jerocki/Getty Images", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "bridal fashion business", "label": "bridal fashion business", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Robert Pattinson", "label": "Robert Pattinson", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3-month-old baby girl in Paris", "label": "3-month-old baby girl in Paris", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Faye Bauman", "label": "Faye Bauman", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "diamond engagement ring", "label": "diamond engagement ring", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Georgia Aquarium", "label": "Georgia Aquarium", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "risky rescue mission for beluga whales", "label": "risky rescue mission for beluga whales", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CDK Global", "label": "CDK Global", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "software outage", "label": "software outage", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Alaska Airlines", "label": "Alaska Airlines", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "tentative labor deal with flight attendants", "label": "tentative labor deal with flight attendants", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Under Armour", "label": "Under Armour", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "434 million to settle lawsuit over sales disclosures", "label": "434 million to settle lawsuit over sales disclosures", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trump Media", "label": "Trump Media", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "in free fall", "label": "in free fall", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jeff Bezos", "label": "Jeff Bezos", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "the Washington Post", "label": "the Washington Post", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sweden", "label": "Sweden", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Midsummer", "label": "Midsummer", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Portugal manager", "label": "Portugal manager", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2018concern\u2019 after pitch invaders seek selfies with Cristiano Ronaldo", "label": "\u2018concern\u2019 after pitch invaders seek selfies with Cristiano Ronaldo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Edmonton Oilers", "label": "Edmonton Oilers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "the brink for Stanley Cup Final set for historic Game 7", "label": "the brink for Stanley Cup Final set for historic Game 7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "A\u2019ja Wilson and Caitlin Clark", "label": "A\u2019ja Wilson and Caitlin Clark", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "early WNBA All-Star voting", "label": "early WNBA All-Star voting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "19-year-old", "label": "19-year-old", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2018the Turkish Messi\u2019", "label": "\u2018the Turkish Messi\u2019", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Euro 2024", "label": "Euro 2024", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "prodigy", "label": "prodigy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "16", "label": "16", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "suicidal 11 years after debut", "label": "suicidal 11 years after debut", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Indian fabric", "label": "Indian fabric", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "luxury in 1960s America", "label": "luxury in 1960s America", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "first \u2018Black Barbie\u2019", "label": "first \u2018Black Barbie\u2019", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "much more than just a doll", "label": "much more than just a doll", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Martine Rose", "label": "Martine Rose", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Milan Fashion Week debut", "label": "Milan Fashion Week debut", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Team USA", "label": "Team USA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "new Olympic uniforms", "label": "new Olympic uniforms", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dolly Parton", "label": "Dolly Parton", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "canceled", "label": "canceled", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "soccer superstar", "label": "soccer superstar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "many talents", "label": "many talents", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "sway young voters", "label": "sway young voters", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "My uncle", "label": "My uncle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a mass grave beside Nazis", "label": "a mass grave beside Nazis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "reburied under a Star of David", "label": "reburied under a Star of David", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Putin", "label": "Putin", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "the defensive", "label": "the defensive", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "we", "label": "we", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a paradigm shift in how we respond to extreme heat", "label": "a paradigm shift in how we respond to extreme heat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "parents", "label": "parents", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "social media", "label": "social media", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "These", "label": "These", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trump\u2019s potential picks for vice president", "label": "Trump\u2019s potential picks for vice president", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Secret Service", "label": "Secret Service", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "security perimeter for Republican National Convention", "label": "security perimeter for Republican National Convention", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trump\u2019s conviction", "label": "Trump\u2019s conviction", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "massive fundraising surge", "label": "massive fundraising surge", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Satellite imagery", "label": "Satellite imagery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a missing puzzle piece in Easter Island saga", "label": "a missing puzzle piece in Easter Island saga", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NASA", "label": "NASA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Boeing Starliner\u2019s return to Earth", "label": "Boeing Starliner\u2019s return to Earth", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Food hoarding", "label": "Food hoarding", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a problem", "label": "a problem", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Social media\u2019s message", "label": "Social media\u2019s message", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2018It\u2019s frightening\u2019", "label": "\u2018It\u2019s frightening\u2019", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TikTok", "label": "TikTok", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Biden administration", "label": "Biden administration", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Elon Musk", "label": "Elon Musk", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "woo advertisers", "label": "woo advertisers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "company", "label": "company", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "worth more than Apple", "label": "worth more than Apple", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "He", "label": "He", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "oust OpenAI\u2019s CEO", "label": "oust OpenAI\u2019s CEO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a \u2018safe\u2019 rival", "label": "a \u2018safe\u2019 rival", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Inside one of the world\u2019s most expensive hotel suites", "label": "Inside one of the world\u2019s most expensive hotel suites", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tolulope Sanusi/Rubyspolaroid Photography/cmDesign Atelier", "label": "Tolulope Sanusi/Rubyspolaroid Photography/cmDesign Atelier", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "This house", "label": "This house", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "most expensive property in Africa", "label": "most expensive property in Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "The world\u2019s longest cantilever building", "label": "The world\u2019s longest cantilever building", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Design by Nichols Architects / Photo by Mike Butler", "label": "Design by Nichols Architects / Photo by Mike Butler", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Inside", "label": "Inside", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Michael Jordan", "label": "Michael Jordan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Katie Ledecky", "label": "Katie Ledecky", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "800m freestyle victory", "label": "800m freestyle victory", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Toomaj", "label": "Toomaj", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "overturned", "label": "overturned", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Manchester Airport", "label": "Manchester Airport", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "power cut", "label": "power cut", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Prince William", "label": "Prince William", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Italian soccer great", "label": "Italian soccer great", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "head injuries from armed break-in at his home", "label": "head injuries from armed break-in at his home", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Australia", "label": "Australia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "its cutest residents", "label": "its cutest residents", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Boeing 737 Max planes", "label": "Boeing 737 Max planes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "smoke penetration in cabin if have a bird strike", "label": "smoke penetration in cabin if have a bird strike", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Vintage polaroids", "label": "Vintage polaroids", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "female prisoners", "label": "female prisoners", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Design Fashion Architecture Luxury Beauty Video Travel Destinations Food \u0026 Drink Stay News Videos Sports Football Tennis Golf Motorsport US Sports Olympics Climbing Esports Hockey", "label": "Design Fashion Architecture Luxury Beauty Video Travel Destinations Food \u0026 Drink Stay News Videos Sports Football Tennis Golf Motorsport US Sports Olympics Climbing Esports Hockey", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Live TV", "label": "Live TV", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CNN Fast Shows", "label": "CNN Fast Shows", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "A-Z CNN10 CNN Max CNN TV Schedules", "label": "A-Z CNN10 CNN Max CNN TV Schedules", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CNN 5 Things", "label": "CNN 5 Things", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chasing Life with Dr. Sanjay Gupta", "label": "Chasing Life with Dr. Sanjay Gupta", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chasing Life", "label": "Chasing Life", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dr. Sanjay Gupta", "label": "Dr. Sanjay Gupta", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "The Assignment", "label": "The Assignment", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Audie Cornish", "label": "Audie Cornish", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tug of War", "label": "Tug of War", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CNN Political Briefing", "label": "CNN Political Briefing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "The Axe Files", "label": "The Axe Files", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CNN", "label": "CNN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Photos Investigations CNN Profiles CNN Leadership CNN Newsletters Work", "label": "Photos Investigations CNN Profiles CNN Leadership CNN Newsletters Work", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sign in My Account Settings Topics You Follow Sign Out Your CNN account Sign in to your CNN account Terms of Use Privacy Policy Ad Choices Accessibility \u0026 CC About Newsletters Transcripts", "label": "Sign in My Account Settings Topics You Follow Sign Out Your CNN account Sign in to your CNN account Terms of Use Privacy Policy Ad Choices Accessibility \u0026 CC About Newsletters Transcripts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "All There Is", "label": "All There Is", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Anderson Cooper", "label": "Anderson Cooper", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "All CNN Audio podcasts", "label": "All CNN Audio podcasts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Science Space Life", "label": "Science Space Life", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Unearthed Climate Solutions Features", "label": "Unearthed Climate Solutions Features", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "As Equals", "label": "As Equals", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Call to Earth Freedom Project Impact Your World Inside Africa CNN Heroes Weather Video", "label": "Call to Earth Freedom Project Impact Your World Inside Africa CNN Heroes Weather Video", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ukraine-Russia War", "label": "Ukraine-Russia War", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Topic", "label": "Topic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Israel-Hamas War", "label": "Israel-Hamas War", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cable News Network", "label": "Cable News Network", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Warner Bros. Discovery Company", "label": "Warner Bros. Discovery Company", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CNN Sans \u2122 \u0026 \u00a9 2016", "label": "CNN Sans \u2122 \u0026 \u00a9 2016", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "All Reserved", "label": "All Reserved", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Israeli prime minister", "label": "ready to make", "to": "a partial deal with Hamas", "width": 1}, {"arrows": "to", "from": "Israeli prime minister", "label": "return", "to": "some hostages", "width": 1}, {"arrows": "to", "from": "Israeli military", "label": "could shift focus to", "to": "border with Lebanon", "width": 1}, {"arrows": "to", "from": "Israeli military", "label": "straps", "to": "injured Palestinian man to hood of jeep", "width": 1}, {"arrows": "to", "from": "Netanyahu", "label": "defends", "to": "public complaint about US weapons supplies", "width": 1}, {"arrows": "to", "from": "Residents along Lebanon\u2019s border with Israel", "label": "fear", "to": "another war", "width": 1}, {"arrows": "to", "from": "U.S.", "label": "offers assurances to", "to": "Israel", "width": 1}, {"arrows": "to", "from": "Israel", "label": "potential event of", "to": "full-blown war with Hezbollah", "width": 1}, {"arrows": "to", "from": "China", "label": "is watching warily", "to": "Putin and Kim", "width": 1}, {"arrows": "to", "from": "China", "label": "could take", "to": "Taiwan without even needing to invade", "width": 1}, {"arrows": "to", "from": "Putin and Kim", "label": "forge", "to": "new \u2018alliance\u2019", "width": 1}, {"arrows": "to", "from": "US aircraft carrier", "label": "arrives in", "to": "South Korea", "width": 1}, {"arrows": "to", "from": "Russia-North Korea defense pact", "label": "deepens", "to": "fears", "width": 1}, {"arrows": "to", "from": "Russia", "label": "has seen", "to": "two major terror attacks in just three months", "width": 1}, {"arrows": "to", "from": "Russia", "label": "put pressure on", "to": "Ukraine\u2019s power system", "width": 1}, {"arrows": "to", "from": "Gunmen", "label": "kill", "to": "police, priest and civilians in attacks on places of worship in Russia\u2019s Dagestan", "width": 1}, {"arrows": "to", "from": "Fire", "label": "kills", "to": "at lithium battery factory", "width": 1}, {"arrows": "to", "from": "Chinese rocket debris", "label": "falls in", "to": "South Korea village", "width": 1}, {"arrows": "to", "from": "Man", "label": "died in", "to": "Hajj heat wave", "width": 1}, {"arrows": "to", "from": "Man", "label": "buried in", "to": "Mecca", "width": 1}, {"arrows": "to", "from": "Duterte critic", "label": "cleared of", "to": "drugs charges", "width": 1}, {"arrows": "to", "from": "Duterte critic", "label": "in police custody for", "to": "six years", "width": 1}, {"arrows": "to", "from": "Missile fragments", "label": "scatter over", "to": "beachgoers in Russian-occupied Crimea", "width": 1}, {"arrows": "to", "from": "Missile fragments", "label": "cause", "to": "At least 5 dead", "width": 1}, {"arrows": "to", "from": "Trump", "label": "rips", "to": "Biden\u2019s debate prep strategy", "width": 1}, {"arrows": "to", "from": "Trump", "label": "floated the idea of", "to": "having a \u2018migrant league of fighters\u2019 to UFC President Dana White", "width": 1}, {"arrows": "to", "from": "Hungary player", "label": "suffers", "to": "serious injury at Euro 2024 game", "width": 1}, {"arrows": "to", "from": "Barcelona", "label": "ending", "to": "apartment rentals by foreign tourists", "width": 1}, {"arrows": "to", "from": "Hiker", "label": "survived", "to": "by drinking a gallon of water each day", "width": 1}, {"arrows": "to", "from": "Hiker", "label": "missing for", "to": "10 days in California mountains", "width": 1}, {"arrows": "to", "from": "EU", "label": "could hit", "to": "Apple with a huge fine", "width": 1}, {"arrows": "to", "from": "EU", "label": "accusing", "to": "Apple of breaking new tech rules", "width": 1}, {"arrows": "to", "from": "EU", "label": "set for talks on", "to": "planned electric vehicle tariffs with China", "width": 1}, {"arrows": "to", "from": "Huawei", "label": "is", "to": "force to be reckoned with", "width": 1}, {"arrows": "to", "from": "Wolves", "label": "attack", "to": "woman who went jogging in French safari zoo", "width": 1}, {"arrows": "to", "from": "Taylor Swift", "label": "put out", "to": "kitchen fire in NYC apartment", "width": 1}, {"arrows": "to", "from": "Taylor Swift", "label": "brings", "to": "Travis Kelce on stage during Eras Tour concert", "width": 1}, {"arrows": "to", "from": "Taylor Swift", "label": "at", "to": "her London show", "width": 1}, {"arrows": "to", "from": "Mysterious monolith", "label": "removed", "to": "Las Vegas", "width": 1}, {"arrows": "to", "from": "Photographer", "label": "look at", "to": "the bizarre world of global arms fairs", "width": 1}, {"arrows": "to", "from": "4-year-old boy", "label": "rescued", "to": "after surviving nearly 24 hours alone in California woods", "width": 1}, {"arrows": "to", "from": "Democrats", "label": "should pay attention to", "to": "UK election", "width": 1}, {"arrows": "to", "from": "New York nanny", "label": "helped shape", "to": "20th-century street photography", "width": 1}, {"arrows": "to", "from": "Jason Williams/Nest cam", "label": "shows", "to": "homeowner chasing off intruder with frying pan", "width": 1}, {"arrows": "to", "from": "Ed Ruttledge/U.S. Geological Survey Cascades Volcano Observatory", "label": "troubles", "to": "scientists", "width": 1}, {"arrows": "to", "from": "Saju Mathew", "label": "break up", "to": "arranged marriage to a perfect mate", "width": 1}, {"arrows": "to", "from": "Arnold Jerocki/Getty Images", "label": "changing", "to": "bridal fashion business", "width": 1}, {"arrows": "to", "from": "Robert Pattinson", "label": "gushing about", "to": "3-month-old baby girl in Paris", "width": 1}, {"arrows": "to", "from": "Faye Bauman", "label": "lost", "to": "diamond engagement ring", "width": 1}, {"arrows": "to", "from": "Georgia Aquarium", "label": "perform", "to": "risky rescue mission for beluga whales", "width": 1}, {"arrows": "to", "from": "CDK Global", "label": "resolve", "to": "software outage", "width": 1}, {"arrows": "to", "from": "Alaska Airlines", "label": "reaches", "to": "tentative labor deal with flight attendants", "width": 1}, {"arrows": "to", "from": "Under Armour", "label": "pay", "to": "434 million to settle lawsuit over sales disclosures", "width": 1}, {"arrows": "to", "from": "Trump Media", "label": "are", "to": "in free fall", "width": 1}, {"arrows": "to", "from": "Jeff Bezos", "label": "is under fire at", "to": "the Washington Post", "width": 1}, {"arrows": "to", "from": "Sweden", "label": "celebrates", "to": "Midsummer", "width": 1}, {"arrows": "to", "from": "Portugal manager", "label": "expresses", "to": "\u2018concern\u2019 after pitch invaders seek selfies with Cristiano Ronaldo", "width": 1}, {"arrows": "to", "from": "Edmonton Oilers", "label": "back from", "to": "the brink for Stanley Cup Final set for historic Game 7", "width": 1}, {"arrows": "to", "from": "A\u2019ja Wilson and Caitlin Clark", "label": "lead", "to": "early WNBA All-Star voting", "width": 1}, {"arrows": "to", "from": "19-year-old", "label": "dubbed", "to": "\u2018the Turkish Messi\u2019", "width": 1}, {"arrows": "to", "from": "19-year-old", "label": "lit up", "to": "Euro 2024", "width": 1}, {"arrows": "to", "from": "prodigy", "label": "made debut at age", "to": "16", "width": 1}, {"arrows": "to", "from": "prodigy", "label": "felt", "to": "suicidal 11 years after debut", "width": 1}, {"arrows": "to", "from": "Indian fabric", "label": "became symbol of", "to": "luxury in 1960s America", "width": 1}, {"arrows": "to", "from": "first \u2018Black Barbie\u2019", "label": "is", "to": "much more than just a doll", "width": 1}, {"arrows": "to", "from": "Martine Rose", "label": "made", "to": "Milan Fashion Week debut", "width": 1}, {"arrows": "to", "from": "Team USA", "label": "revealed", "to": "new Olympic uniforms", "width": 1}, {"arrows": "to", "from": "Dolly Parton", "label": "can be", "to": "canceled", "width": 1}, {"arrows": "to", "from": "soccer superstar", "label": "has", "to": "many talents", "width": 1}, {"arrows": "to", "from": "soccer superstar", "label": "can", "to": "sway young voters", "width": 1}, {"arrows": "to", "from": "My uncle", "label": "was tossed in", "to": "a mass grave beside Nazis", "width": 1}, {"arrows": "to", "from": "My uncle", "label": "will be", "to": "reburied under a Star of David", "width": 1}, {"arrows": "to", "from": "Putin", "label": "goes on", "to": "the defensive", "width": 1}, {"arrows": "to", "from": "we", "label": "need", "to": "a paradigm shift in how we respond to extreme heat", "width": 1}, {"arrows": "to", "from": "parents", "label": "need warning about", "to": "social media", "width": 1}, {"arrows": "to", "from": "These", "label": "are", "to": "Trump\u2019s potential picks for vice president", "width": 1}, {"arrows": "to", "from": "Secret Service", "label": "announces", "to": "security perimeter for Republican National Convention", "width": 1}, {"arrows": "to", "from": "Trump\u2019s conviction", "label": "spurred", "to": "massive fundraising surge", "width": 1}, {"arrows": "to", "from": "Satellite imagery", "label": "may provide", "to": "a missing puzzle piece in Easter Island saga", "width": 1}, {"arrows": "to", "from": "NASA", "label": "has again delayed", "to": "Boeing Starliner\u2019s return to Earth", "width": 1}, {"arrows": "to", "from": "Food hoarding", "label": "is", "to": "a problem", "width": 1}, {"arrows": "to", "from": "Social media\u2019s message", "label": "about the sun and sunscreen is", "to": "\u2018It\u2019s frightening\u2019", "width": 1}, {"arrows": "to", "from": "TikTok", "label": "ramps up attacks on", "to": "Biden administration", "width": 1}, {"arrows": "to", "from": "Elon Musk", "label": "is trying to", "to": "woo advertisers", "width": 1}, {"arrows": "to", "from": "company", "label": "is now", "to": "worth more than Apple", "width": 1}, {"arrows": "to", "from": "He", "label": "tried to", "to": "oust OpenAI\u2019s CEO", "width": 1}, {"arrows": "to", "from": "He", "label": "is starting", "to": "a \u2018safe\u2019 rival", "width": 1}, {"arrows": "to", "from": "Inside one of the world\u2019s most expensive hotel suites", "label": "photographed by", "to": "Tolulope Sanusi/Rubyspolaroid Photography/cmDesign Atelier", "width": 1}, {"arrows": "to", "from": "This house", "label": "is built on", "to": "most expensive property in Africa", "width": 1}, {"arrows": "to", "from": "The world\u2019s longest cantilever building", "label": "opened", "to": "Design by Nichols Architects / Photo by Mike Butler", "width": 1}, {"arrows": "to", "from": "Inside", "label": "belongs to", "to": "Michael Jordan", "width": 1}, {"arrows": "to", "from": "Katie Ledecky", "label": "makes history with", "to": "800m freestyle victory", "width": 1}, {"arrows": "to", "from": "Toomaj", "label": "has death sentence", "to": "overturned", "width": 1}, {"arrows": "to", "from": "Manchester Airport", "label": "disrupted due to", "to": "power cut", "width": 1}, {"arrows": "to", "from": "Prince William", "label": "meets", "to": "Taylor Swift", "width": 1}, {"arrows": "to", "from": "Italian soccer great", "label": "suffers from", "to": "head injuries from armed break-in at his home", "width": 1}, {"arrows": "to", "from": "Italian soccer great", "label": "was watching", "to": "Euro 2024", "width": 1}, {"arrows": "to", "from": "Australia", "label": "needs help looking after", "to": "its cutest residents", "width": 1}, {"arrows": "to", "from": "Boeing 737 Max planes", "label": "could have", "to": "smoke penetration in cabin if have a bird strike", "width": 1}, {"arrows": "to", "from": "Vintage polaroids", "label": "paint picture of", "to": "female prisoners", "width": 1}, {"arrows": "to", "from": "Design Fashion Architecture Luxury Beauty Video Travel Destinations Food \u0026 Drink Stay News Videos Sports Football Tennis Golf Motorsport US Sports Olympics Climbing Esports Hockey", "label": "Watch", "to": "Live TV", "width": 1}, {"arrows": "to", "from": "CNN Fast Shows", "label": "includes", "to": "A-Z CNN10 CNN Max CNN TV Schedules", "width": 1}, {"arrows": "to", "from": "CNN 5 Things", "label": "associated with", "to": "Chasing Life with Dr. Sanjay Gupta", "width": 1}, {"arrows": "to", "from": "Chasing Life", "label": "is by", "to": "Dr. Sanjay Gupta", "width": 1}, {"arrows": "to", "from": "The Assignment", "label": "is with", "to": "Audie Cornish", "width": 1}, {"arrows": "to", "from": "Tug of War", "label": "is part of", "to": "CNN Political Briefing", "width": 1}, {"arrows": "to", "from": "The Axe Files", "label": "is part of", "to": "CNN", "width": 1}, {"arrows": "to", "from": "CNN", "label": "offers", "to": "Photos Investigations CNN Profiles CNN Leadership CNN Newsletters Work", "width": 1}, {"arrows": "to", "from": "CNN", "label": "offers", "to": "Sign in My Account Settings Topics You Follow Sign Out Your CNN account Sign in to your CNN account Terms of Use Privacy Policy Ad Choices Accessibility \u0026 CC About Newsletters Transcripts", "width": 1}, {"arrows": "to", "from": "All There Is", "label": "is with", "to": "Anderson Cooper", "width": 1}, {"arrows": "to", "from": "Anderson Cooper", "label": "associated with", "to": "All CNN Audio podcasts", "width": 1}, {"arrows": "to", "from": "Science Space Life", "label": "associated with", "to": "Unearthed Climate Solutions Features", "width": 1}, {"arrows": "to", "from": "As Equals", "label": "associated with", "to": "Call to Earth Freedom Project Impact Your World Inside Africa CNN Heroes Weather Video", "width": 1}, {"arrows": "to", "from": "Ukraine-Russia War", "label": "is a", "to": "Topic", "width": 1}, {"arrows": "to", "from": "Israel-Hamas War", "label": "is a", "to": "Topic", "width": 1}, {"arrows": "to", "from": "Cable News Network", "label": "is a", "to": "Warner Bros. Discovery Company", "width": 1}, {"arrows": "to", "from": "Cable News Network", "label": "possesses", "to": "CNN Sans \u2122 \u0026 \u00a9 2016", "width": 1}, {"arrows": "to", "from": "Cable News Network", "label": "Rights", "to": "All Reserved", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
