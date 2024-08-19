@@ -1,21 +1,35 @@
 # Ignore all directories
-*/
-!/webpage/*
 
-# # Ignore all non-Python files
+
+# Include specific directories and their contents
+!webpage/
+!webpage/**
+!webpage2/
+!webpage2/**
+!webpage3/
+!webpage3/**
+!Approach1/
+!Approach1/** 
+
+*/
+# Ignore all non-Python files
+# Uncomment the following lines if you want to ignore all non-Python files except the specific ones you mention
 # *
 # !*.py
+
 config.py
-# Example of ignoring specific directories
+
+# Ignore specific directories
 node_modules/
 venv/
 
-# Ignoring specific files
+# Ignore specific files
 *.log
 *.csv
 *.tsv
 *.json
 *.md
+*.txt
 
 # Exceptions for specific directories or files to be tracked
 # !/src/

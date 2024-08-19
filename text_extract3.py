@@ -1,6 +1,6 @@
 import os
 import argparse
-from bs4 import BeautifulSoup
+import html2text
 
 def extract_text_from_html(file_path):
     try:
@@ -12,24 +12,13 @@ def extract_text_from_html(file_path):
             except UnicodeDecodeError:
                 html_content = file.read().decode('latin-1')
                 
-        soup = BeautifulSoup(html_content, 'html.parser')
+        text_maker = html2text.HTML2Text()
+        text_maker.ignore_links = True
+        text_maker.ignore_images = True
+        text_maker.ignore_emphasis = True
+        text_maker.bypass_tables = True
         
-        # Extract text from different parts of the page
-        title = soup.title.string if soup.title else ''
-        
-        meta_description = ''
-        meta_description_tag = soup.find('meta', attrs={'name': 'description'})
-        if meta_description_tag:
-            meta_description = meta_description_tag['content']
-        
-        meta_keywords = ''
-        meta_keywords_tag = soup.find('meta', attrs={'name': 'keywords'})
-        if meta_keywords_tag:
-            meta_keywords = meta_keywords_tag['content']
-        
-        visible_text = ' '.join(soup.stripped_strings)
-        
-        text_content = '\n'.join([title, meta_description, meta_keywords, visible_text])
+        text_content = text_maker.handle(html_content)
         
         return text_content.strip()
     except Exception as e:
@@ -46,6 +35,7 @@ def process_directory(main_folder):
                     subfolder_name = os.path.basename(root)
                     text_file_name = f"{os.path.splitext(file)[0]}_{subfolder_name}.txt"
                     text_file_path = os.path.join(root, text_file_name)
+                    # Split content into lines and filter out empty lines
                     lines = filter(lambda x: x.strip(), text_content.split('\n'))
                     with open(text_file_path, 'w', encoding='utf-8') as text_file:
                         text_file.write('\n'.join(lines))

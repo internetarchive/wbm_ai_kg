@@ -2,15 +2,16 @@ import os
 import openai
 import argparse
 from tqdm import tqdm
+import time
 from config import KEY
 openai.api_key = KEY
 
 def read_text_from_file(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         text = file.read()
     return text
 
-def chunk_text(text, chunk_size=1000):
+def chunk_text(text, chunk_size=2000):
     chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
     return chunks
 
@@ -21,7 +22,7 @@ def save_chunks_to_folder(chunks, folder_path):
     chunk_paths = []
     for i, chunk in enumerate(chunks):
         chunk_path = os.path.join(folder_path, f'chunk_{i+1}.txt')
-        with open(chunk_path, 'w') as file:
+        with open(chunk_path, 'w', encoding='utf-8') as file:
             file.write(chunk)
         chunk_paths.append(chunk_path)
     
@@ -78,9 +79,10 @@ def generate_tuples_from_chunk(chunk):
 
     Tuples:
     """
+    print("Inside Generate Tuples and before making query\n")
 
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a text extraction model."},
             {"role": "user", "content": prompt}
@@ -90,19 +92,19 @@ def generate_tuples_from_chunk(chunk):
     output = response['choices'][0]['message']['content'].strip()
     return output
 
-def main(file_path, output_folder, output_file, chunk_size=1000):
+def main(file_path, output_folder, output_file, chunk_size=2000):
     text = read_text_from_file(file_path)
     chunks = chunk_text(text, chunk_size)
     chunk_paths = save_chunks_to_folder(chunks, output_folder)
     
     all_tuples = []
     for chunk_path in tqdm(chunk_paths, desc="Processing chunks"):
-        with open(chunk_path, 'r') as file:
+        with open(chunk_path, 'r', encoding='utf-8') as file:
             chunk = file.read()
         tuples = generate_tuples_from_chunk(chunk)
         all_tuples.append(tuples)
     
-    with open(output_file, 'w') as file:
+    with open(output_file, 'w', encoding='utf-8') as file:
         for idx, t in enumerate(all_tuples):
             file.write(f"Tuples from chunk {idx+1}:\n")
             file.write(f"{t}\n\n")
