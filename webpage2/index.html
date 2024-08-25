@@ -83,6 +83,23 @@
         .form-check {
             margin-bottom: 10px;
         }
+        .text-section {
+            margin-top: 40px;
+        }
+        .text-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .text-section p {
+            font-size: 1em;
+            color: #555;
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +142,19 @@
             <p id="valueCategories">Value Categories: </p>
         </div>
         <div id="cy"></div>
+
+        <!-- Section for Text File Upload and Rendering -->
+        <div class="text-section">
+            <h2>Approach 1: Giving text input to LLM</h2>
+            <input type="file" class="form-control-file" id="textFile1">
+            <p id="textContent1"></p>
+        </div>
+
+        <div class="text-section">
+            <h2>Approach 2: Giving Tuples to the LLM</h2>
+            <input type="file" class="form-control-file" id="textFile2">
+            <p id="textContent2"></p>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

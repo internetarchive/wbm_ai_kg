@@ -1,5 +1,5 @@
 # Ignore all directories
-
+./config.py
 
 # Include specific directories and their contents
 !webpage/
@@ -17,7 +17,7 @@
 # *
 # !*.py
 
-config.py
+
 
 # Ignore specific directories
 node_modules/

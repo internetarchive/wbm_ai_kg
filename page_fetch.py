@@ -52,6 +52,11 @@ def fetch_and_save_content(row, base_dir):
     
     # Create a directory named after the timestamp inside the base directory
     directory = os.path.join(base_dir, timestamp)
+    
+    # Check if the path is already a file
+    if os.path.isfile(directory):
+        raise Exception(f"A file with the name '{directory}' already exists.")
+    
     if not os.path.exists(directory):
         os.makedirs(directory)
     
@@ -69,12 +74,13 @@ def fetch_and_save_content(row, base_dir):
     except Exception as e:
         print(f"Error fetching content for {timestamp}: {e}")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Fetch CDX data and save to TSV.')
     parser.add_argument('url', type=str, help='The URL to search in the Wayback Machine')
     parser.add_argument('output', type=str, help='The output TSV file name')
     parser.add_argument('--full', action='store_true', help='Dump full data')
-    parser.add_argument('--num_lines', type=int, default=10, help='Number of lines to save from the end of the TSV')
+    parser.add_argument('--num_lines', type=int, default=100, help='Number of lines to save from the end of the TSV')
     
     args = parser.parse_args()
     df = fetch_cdx_data(args.url)
@@ -86,6 +92,7 @@ if __name__ == "__main__":
     # df = save_to_tsv(df, args.output)  # Save all
     
     # Create a base directory named after the TSV file (without .tsv extension)
+    print("creating base directory...")
     base_dir = os.path.splitext(args.output)[0]
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)

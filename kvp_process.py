@@ -35,20 +35,24 @@ def save_processed_tuples(output_file, complete_tuples, grouped_tuples):
     with open(output_file, 'w') as file:
         json.dump({'complete_tuples': complete_tuples, 'grouped_tuples': grouped_tuples}, file, indent=4)
 
-def main(input_file):
-    tuples = read_tuples_from_file(input_file)
-    
-    complete_tuples, grouped_tuples = validate_and_group_tuples(tuples)
-    
-    output_file = os.path.splitext(input_file)[0] + '.json'
-    save_processed_tuples(output_file, complete_tuples, grouped_tuples)
+def process_files_in_directory(root_dir):
+    for subdir, _, files in os.walk(root_dir):
+        for file in files:
+            if file.startswith('tupleLLM_'):
+                file_path = os.path.join(subdir, file)
+                print(f"Processing {file_path}")
+                tuples = read_tuples_from_file(file_path)
+                complete_tuples, grouped_tuples = validate_and_group_tuples(tuples)
+                output_file = os.path.splitext(file_path)[0] + '.json'
+                save_processed_tuples(output_file, complete_tuples, grouped_tuples)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process key-value-relation tuples, remove incomplete ones, and group similar tuples together.")
-    parser.add_argument("input_file", type=str, help="Path to the input .txt file containing key-value-relation tuples.")
+    parser = argparse.ArgumentParser(description="Process key-value-relation tuples from all files named 'version_*' inside subfolders, remove incomplete ones, and group similar tuples together.")
+    parser.add_argument("root_dir", type=str, help="Path to the root directory containing subfolders with 'version_*' files.")
     
     args = parser.parse_args()
     
-    with tqdm(total=100, desc="Processing tuples") as pbar:
-        main(args.input_file)
+    with tqdm(total=100, desc="Processing all files") as pbar:
+        process_files_in_directory(args.root_dir)
         pbar.update(100)
+    

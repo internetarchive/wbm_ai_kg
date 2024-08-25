@@ -2,6 +2,10 @@ document.getElementById('fileInput1').addEventListener('change', handleFileUploa
 document.getElementById('fileInput2').addEventListener('change', handleFileUpload);
 document.getElementById('colorFilter').addEventListener('change', filterGraph);
 
+// Event listeners for text file uploads
+document.getElementById('textFile1').addEventListener('change', handleTextFileUpload1);
+document.getElementById('textFile2').addEventListener('change', handleTextFileUpload2);
+
 let cy;
 let allElements = [];
 let categories = { key: new Set(), value: new Set() };
@@ -16,15 +20,19 @@ function handleFileUpload(event) {
     const fileIndex = event.target.id === 'fileInput1' ? 1 : 2;
     reader.onload = function(e) {
         const content = e.target.result;
-        const jsonData = JSON.parse(content);
-        jsonFiles.push({ index: fileIndex, data: jsonData.complete_tuples });
-
-        if (jsonFiles.length === 2) {
-            processGraphData();
-            assignColors();
-            updateFilters();
-            updateCategoryCounts();
-            renderGraph(allElements);
+        try {
+            const jsonData = JSON.parse(content);
+            jsonFiles.push({ index: fileIndex, data: jsonData.complete_tuples });
+            if (jsonFiles.length === 2) {
+                processGraphData();
+                assignColors();
+                updateFilters();
+                updateCategoryCounts();
+                renderGraph(allElements);
+            }
+        } catch (err) {
+            console.error("Error parsing JSON file:", err);
+            alert("Invalid JSON file.");
         }
     };
     reader.readAsText(file);
@@ -71,10 +79,6 @@ function processGraphData() {
         ...Array.from(nodes.values()),
         ...edges
     ];
-
-    console.log("Nodes:", Array.from(nodes.values()));
-    console.log("Edges:", edges);
-    console.log("All Elements:", allElements);
 }
 
 function assignColors() {
@@ -98,9 +102,6 @@ function assignColors() {
             element.data.borderColor = 'blue';  // Common nodes have blue border
         }
     });
-
-    console.log("Category Colors:", categoryColors);
-    console.log("Elements after color assignment:", allElements);
 }
 
 function updateFilters() {
@@ -160,7 +161,8 @@ function renderGraph(elements) {
                     'border-color': 'data(borderColor)',
                     'border-width': 3,
                     'text-valign': 'center',
-                    'color': '#000'
+                    'color': '#000',
+                    'font-size': 10
                 }
             },
             {
@@ -177,18 +179,37 @@ function renderGraph(elements) {
             }
         ],
         layout: {
-            name: 'cose',
-            idealEdgeLength: 100,
-            nodeRepulsion: 4000,
-            gravity: 0.2,
+            name: 'cose',  // Retain 'cose' layout for simplicity and stability
+            idealEdgeLength: 180,
+            nodeRepulsion: 6000,
+            gravity: 0.1,
+            componentSpacing: 200, 
             numIter: 1000,
             coolingFactor: 0.95,
-            fit: true
-        }
+            fit: true,
+            animate: true  // Smooth rendering
+        },
+        zoomingEnabled: true,
+        userZoomingEnabled: true,
+        panningEnabled: true,
+        userPanningEnabled: true,
+        autoungrabify: false // Allow nodes to be dragged
     });
 
-    console.log("Graph rendered with elements:", elements);
+    cy.on('tap', 'node', function (evt) {
+        var node = evt.target;
+        console.log('Node clicked:', node.data());
+    });
+
+    cy.on('mouseover', 'node', function(evt){
+        evt.target.style('border-width', 6); // Highlight node on hover
+    });
+
+    cy.on('mouseout', 'node', function(evt){
+        evt.target.style('border-width', 3); // Reset highlight on mouse out
+    });
 }
+
 function filterGraph() {
     const keyTypes = Array.from(document.querySelectorAll('#keyTypeCheckboxes .form-check-input:checked')).map(cb => cb.value);
     const valueTypes = Array.from(document.querySelectorAll('#valueTypeCheckboxes .form-check-input:checked')).map(cb => cb.value);
@@ -228,4 +249,26 @@ function filterGraph() {
     }
 
     renderGraph(filteredElements);
+}
+
+// Function to handle first text file upload
+function handleTextFileUpload1(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        document.getElementById('textContent1').textContent = content;
+    };
+    reader.readAsText(file);
+}
+
+// Function to handle second text file upload
+function handleTextFileUpload2(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        document.getElementById('textContent2').textContent = content;
+    };
+    reader.readAsText(file);
 }
